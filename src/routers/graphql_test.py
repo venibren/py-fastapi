@@ -19,13 +19,14 @@ class Query:
         self,
         id: Annotated[UUID, strawberry.argument(description="The UUID of the user")],
     ) -> User:
-        # Example implementation; replace with your data access
+        # Testing
         return User(id=id, username="testuser", email="")
 
 
+# Create schema and GraphQL router
 schema = strawberry.Schema(query=Query)
 graphql_app = GraphQLRouter(schema, path="/graphql")
 
-#
+# Attach the GraphQL router to the FastAPI router
 router = APIRouter(prefix="", tags=["GraphQL"])
 router.include_router(graphql_app)
