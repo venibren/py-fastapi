@@ -1,0 +1,27 @@
+[project]
+name = "py-fastapi"
+version = "0.0.1"
+authors = [
+  { name="venibren", email="brendan@venibren.dev" },
+]
+description = "Just a basic application to learn and experiment with FastAPI"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "qrcode[pil]",
+    "pillow",
+    "strawberry-graphql[fastapi]"
+]
+
+[project.urls]
+Homepage = "https://github.com/venibren/py-fastapi"
+Issues = "https://github.com/venibren/py-fastapi/issues"

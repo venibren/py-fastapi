@@ -1,0 +1,21 @@
+from fastapi import APIRouter
+from fastapi.responses import StreamingResponse
+from src.services.qr_service import QRService
+
+router = APIRouter(
+    prefix="/qr",
+    tags=["QR Code"],
+    responses={404: {"description": "Not found"}},
+)
+
+
+@router.get("/", response_class=StreamingResponse)
+async def get_qr(url: str = "https://resume.venibren.dev") -> StreamingResponse:
+    qr_service = QRService()
+    qr_service.generate(url)
+
+    qr_service.add_watermark("./src/assets/qr_watermark.png")
+
+    buffer = qr_service.to_buffer_stream()
+
+    return StreamingResponse(buffer, media_type="image/png")
