@@ -7,7 +7,13 @@ from PIL import Image
 
 class QRService:
     # Initialize QR code with specified size and output format
-    def __init__(self, size: int = 10) -> None:
+    def __init__(
+        self, background_color: str = "#ffffff", fill_color="#000000", size: int = 10
+    ) -> None:
+        # Placeholders
+        self.background_color = background_color
+        self.fill_color = fill_color
+
         # Configure QR code parameters
         self.qr: qrcode.QRCode = qrcode.QRCode(
             version=1,
@@ -17,14 +23,14 @@ class QRService:
         )
 
     # Generate QR code from URL
-    def generate(self, url: str):
+    def generate(self, data: str):
         # Add data to QR code
-        self.qr.add_data(url)
+        self.qr.add_data(data)
         self.qr.make(fit=True)
 
         # Create QR code image
         self.qr_image = self.qr.make_image(
-            back_color="#ffffff", fill_color="#000000"
+            back_color=self.background_color, fill_color=self.fill_color
         ).convert("RGBA")
 
     def add_watermark(self, logo_path: str):
@@ -44,7 +50,7 @@ class QRService:
         )
 
         # Add white background for the watermark
-        background = Image.new("RGBA", watermark.size, "#ffffff")
+        background = Image.new("RGBA", watermark.size, self.background_color)
         self.qr_image.paste(background, position, background)
 
         # Paste watermark onto QR code image

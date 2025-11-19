@@ -9,10 +9,15 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_class=StreamingResponse)
-async def get_qr(url: str = "https://resume.venibren.dev") -> StreamingResponse:
+@router.get("", response_class=StreamingResponse)
+async def get_qr(
+    url: str = "https://resume.venibren.dev",
+    background_color: str | None = None,
+    fill_color: str | None = None,
+    size: int = 10,
+) -> StreamingResponse:
     qr_service = QRService()
-    qr_service.generate(url)
+    qr_service.generate(data=url)
 
     qr_service.add_watermark("./src/assets/qr_watermark.png")
 
