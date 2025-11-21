@@ -1,13 +1,15 @@
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 
-from app.api import router as api_router
-from app.core.config import AppSettings
+# from app.api import router as api_router
+from src.app.core.config import settings
+
+print(f"Starting application: {settings.APP_NAME} v{settings.APP_VERSION}")
 
 app = FastAPI(
-    title=AppSettings.APP_NAME,
-    description=AppSettings.APP_DESCRIPTION,
-    version=AppSettings.APP_VERSION,
+    title=settings.APP_NAME,
+    description=settings.APP_DESCRIPTION,
+    version=settings.APP_VERSION,
     root_path="/api",
 )
 
@@ -16,4 +18,4 @@ app = FastAPI(
 # Todo: Add logging middleware
 
 # Api router configuration
-app.include_router(api_router)
+# app.include_router(api_router)
