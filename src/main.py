@@ -4,12 +4,12 @@ from fastapi.responses import FileResponse
 # from app.api import router as api_router
 from src.app.core.config import settings
 
-print(f"Starting application: {settings.APP_NAME} v{settings.APP_VERSION}")
+print(f"Starting application: {settings.app_name} v{settings.app_version}")
 
 app = FastAPI(
-    title=settings.APP_NAME,
-    description=settings.APP_DESCRIPTION,
-    version=settings.APP_VERSION,
+    title=settings.app_name,
+    description=settings.app_description,
+    version=settings.app_version,
     root_path="/api",
 )
 
