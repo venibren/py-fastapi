@@ -1,8 +1,9 @@
+from typing import Annotated
+from uuid import UUID
+
 import strawberry
 from fastapi import APIRouter
 from strawberry.fastapi import GraphQLRouter
-from typing import Annotated
-from uuid import UUID
 
 
 @strawberry.type
@@ -25,8 +26,8 @@ class Query:
 
 # Create schema and GraphQL router
 schema = strawberry.Schema(query=Query)
-graphql_app = GraphQLRouter(schema, path="/graphql")
+# graphql_app = GraphQLRouter(schema, path="/graphql")
 
 # Attach the GraphQL router to the FastAPI router
-router = APIRouter(prefix="", tags=["GraphQL"])
-router.include_router(graphql_app)
+# router = APIRouter(prefix="", tags=["GraphQL"])
+# router.include_router(graphql_app)

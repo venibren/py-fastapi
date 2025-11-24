@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 
-from ...services.qr_service import QRService
+from ....services.qr_service import QRService
 
 router = APIRouter(
     prefix="/qr",
