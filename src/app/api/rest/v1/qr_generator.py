@@ -6,7 +6,6 @@ from ....services.qr_service import QRService
 router = APIRouter(
     prefix="/qr",
     tags=["QR Code"],
-    responses={404: {"description": "Not found"}},
 )
 
 

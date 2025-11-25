@@ -1,7 +1,8 @@
 from fastapi import FastAPI
+from fastapi.openapi.utils import get_openapi
 from fastapi.responses import FileResponse
 
-from src.app.api import router as api_router
+from src.app.api import api_router
 from src.app.core.config import settings
 
 print(f"Starting application: {settings.app_name} v{settings.app_version}")
