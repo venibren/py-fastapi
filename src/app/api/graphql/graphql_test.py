@@ -26,8 +26,3 @@ class Query:
 
 # Create schema and GraphQL router
 schema = strawberry.Schema(query=Query)
-# graphql_app = GraphQLRouter(schema, path="/graphql")
-
-# Attach the GraphQL router to the FastAPI router
-# router = APIRouter(prefix="", tags=["GraphQL"])
-# router.include_router(graphql_app)
