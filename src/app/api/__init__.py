@@ -147,8 +147,8 @@ for source_file in _package_path.rglob("*.py"):
     # Import module
     try:
         imported_module: types.ModuleType = importlib.import_module(module_dotted_path)
-    except Exception as import_error:
-        print(f"[api] Import failed {module_dotted_path}: {import_error}")
+    except Exception as ex:
+        print(f"[api] Import failed {module_dotted_path}: {ex}")
         continue
 
     # REST: include module router when present
@@ -160,8 +160,8 @@ for source_file in _package_path.rglob("*.py"):
                 module_rest_router,
                 prefix=f"/{rest_version}" if rest_version else "",
             )
-        except Exception as include_error:
-            print(f"[api] Include REST failed {module_dotted_path}: {include_error}")
+        except Exception as ex:
+            print(f"[api] Include REST failed {module_dotted_path}: {ex}")
 
     # GraphQL: collect global root classes (no versioning)
     try:
@@ -196,10 +196,8 @@ for source_file in _package_path.rglob("*.py"):
                 print(
                     f"[api] Ignored non-Schema 'schema' in {imported_module.__name__} (type={type(module_schema_attr)})"
                 )
-    except Exception as graphql_collect_error:
-        print(
-            f"[api] Collect GraphQL types failed {module_dotted_path}: {graphql_collect_error}"
-        )
+    except Exception as ex:
+        print(f"[api] Collect GraphQL types failed {module_dotted_path}: {ex}")
 
 ###########################################
 # Build & mount a GraphQL endpoint
@@ -231,8 +229,8 @@ if _graphql_query_root_types:
         print(f"- {len(_graphql_query_root_types)} Query")
         print(f"- {len(_graphql_mutation_root_types)} Mutation")
         print(f"- {len(_graphql_subscription_root_types)} Subscription")
-    except Exception as graphql_setup_error:
-        print(f"[api] GraphQL setup failed: {graphql_setup_error}")
+    except Exception as ex:
+        print(f"[api] GraphQL setup failed: {ex}")
 else:
     print("[api] No GraphQL Query types discovered; GraphQL not mounted.")
 
