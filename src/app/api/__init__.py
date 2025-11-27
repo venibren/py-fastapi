@@ -50,7 +50,12 @@ _graphql_subscription_root_types: GraphQLRootList = []
 def _infer_version(parts: Sequence[str]) -> Optional[str]:
     """
     Infer 'vN' wgeb present in a path sequence.
-    E.g., 'src.api.rest.v1.example' -> 'v1'
+    Examples:
+    - 'src.api.rest.v1.module' -> 'v1'
+    - 'src.api.rest.v2.module' -> 'v2'
+    - 'src.api.module' -> None
+    - 'src.api.legacy.module' -> None
+    - 'src.api.graphql.module' -> None
 
     REST versioning only; GraphQL has no versioning.
     """
