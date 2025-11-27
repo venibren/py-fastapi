@@ -1,13 +1,12 @@
-from fastapi import APIRouter
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, Response, status
 
 router = APIRouter(
     prefix="/health",
     tags=["Health Check"],
-    responses={204: {"healthy": True}},
+    responses={204: {"description": "No Content"}},
 )
 
 
-@router.get("", response_class=bool)
-async def get_health() -> bool:
-    return True
+@router.get("/", status_code=status.HTTP_204_NO_CONTENT)
+async def get_health() -> Response:
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
