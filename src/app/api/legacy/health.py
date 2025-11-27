@@ -7,6 +7,17 @@ router = APIRouter(
 )
 
 
-@router.get("/", status_code=status.HTTP_204_NO_CONTENT)
+@router.get(
+    "/",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Health Check",
+    description="Returns 204 No Content if the service is healthy.",
+    operation_id="getHealth",
+    responses={
+        204: {"description": "Service is healthy"},
+        503: {"description": "Service is not healthy"},
+    },
+)
 async def get_health() -> Response:
+    """Health probe; returns 204 with an empty body."""
     return Response(status_code=status.HTTP_204_NO_CONTENT)
