@@ -225,7 +225,9 @@ if _graphql_query_root_types:
             subscription=merged_subscription_root,
         )
         graphql_router: StrawberryGraphQLRouter = StrawberryGraphQLRouter(
-            graphql_schema
+            schema=graphql_schema,
+            tags=["GraphQL"],
+            hidden=True,
         )
         api_router.include_router(graphql_router, prefix="/graphql")
 

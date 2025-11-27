@@ -2,7 +2,7 @@ from fastapi import APIRouter, Response, status
 
 router = APIRouter(
     prefix="/health",
-    tags=["Health Check"],
+    tags=["Health"],
     responses={204: {"description": "No Content"}},
 )
 
