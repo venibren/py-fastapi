@@ -8,7 +8,7 @@ router = APIRouter(
 
 
 @router.get(
-    "/",
+    path="",
     status_code=status.HTTP_204_NO_CONTENT,
     summary="Health Check",
     description="Returns 204 No Content if the service is healthy.",
