@@ -51,6 +51,8 @@ def _infer_version(parts: Sequence[str]) -> Optional[str]:
     """
     Infer 'vN' wgeb present in a path sequence.
     Examples:
+    - 'src.api.v1.module' -> 'v1'
+    - 'src.api.v2.module' -> 'v2'
     - 'src.api.rest.v1.module' -> 'v1'
     - 'src.api.rest.v2.module' -> 'v2'
     - 'src.api.module' -> None
@@ -227,15 +229,8 @@ if _graphql_query_root_types:
         graphql_router: StrawberryGraphQLRouter = StrawberryGraphQLRouter(
             schema=graphql_schema,
             tags=["GraphQL"],
-            hidden=True,
         )
         api_router.include_router(graphql_router, prefix="/graphql")
-
-        print("================================")
-        print("[api] Mounted GraphQL with:")
-        print(f"- {len(_graphql_query_root_types)} Query")
-        print(f"- {len(_graphql_mutation_root_types)} Mutation")
-        print(f"- {len(_graphql_subscription_root_types)} Subscription")
     except Exception as ex:
         print(f"[api] GraphQL setup failed: {ex}")
 else:
@@ -245,14 +240,20 @@ else:
 ###########################################
 # Debugging
 ###########################################
-print("================================")
-print("[api] Routes generated:")
-for route in api_router.routes:
-    if hasattr(route, "methods"):
-        print(f"- {route.methods}: {route.path}")
-    else:
-        print(f"- {route.name}: {route.path}")
-print("================================")
+if __debug__:
+    print("================================")
+    print("[api] Routes generated:")
+    for route in api_router.routes:
+        if hasattr(route, "methods"):
+            print(f"- {route.methods}: {route.path}")
+        else:
+            print(f"- {route.name}: {route.path}")
+    print("================================")
+    print("[api] Mounted GraphQL with:")
+    print(f"- {len(_graphql_query_root_types)} Query")
+    print(f"- {len(_graphql_mutation_root_types)} Mutation")
+    print(f"- {len(_graphql_subscription_root_types)} Subscription")
+    print("================================")
 
 
 # Exported symbols
