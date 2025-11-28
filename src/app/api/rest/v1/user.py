@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Response, status
-from fastapi.responses import StreamingResponse
 
 from ....models.user import User
 
