@@ -1,13 +1,19 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.openapi.utils import get_openapi
-from fastapi.responses import FileResponse
 
-from src.app.api import api_router
+from src.app.core.logger import get_logger, setup_logger
 from src.app.core.config import settings
 
-print(f"Starting application: {settings.app_name} v{settings.app_version}")
+# Initialize logger
+setup_logger()
+_logger = get_logger(__name__)
+# Todo: Add DataDog / Cloudwatch logging integration
 
+# Import API router after logger setup for detailed initialization
+from src.app.api import api_router
+
+# Set up FastAPI application
+_logger.verbose("Starting FastAPI application")
 app = FastAPI(
     title=settings.app_name,
     description=settings.app_description,
@@ -16,6 +22,7 @@ app = FastAPI(
 )
 
 # CORS middleware
+_logger.verbose("Configuring CORS middleware")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_allow_origins,
@@ -24,7 +31,10 @@ app.add_middleware(
     allow_headers=settings.cors_allow_headers,
 )
 
-# Todo: Add logging middleware
-
 # Api router configuration
+_logger.verbose("Including API router")
 app.include_router(api_router)
+
+_logger.info(
+    "Application setup complete: %s v%s", settings.app_name, settings.app_version
+)

@@ -9,6 +9,10 @@ from strawberry import Schema
 from strawberry.fastapi import GraphQLRouter as StrawberryGraphQLRouter
 from strawberry.tools import merge_types
 
+from src.app.core.logger import get_logger
+
+_logger = get_logger(__name__)
+
 ###########################################
 # Type aliases
 ###########################################
@@ -24,7 +28,7 @@ TripleOptionalRootClasses: TypeAlias = Tuple[
 ###########################################
 _package_name: str = __name__
 _package_path: Path = Path(__file__).parent
-print(f"Auto-discovering endpoints in package: {_package_name} ({_package_path})")
+_logger.info("Auto-discovering endpoints in package: %s", _package_name)
 
 
 ###########################################
@@ -82,7 +86,7 @@ def _collect_graphql_roots_from_schema(schema: Schema) -> TripleOptionalRootClas
     # Fallback to public helper if present, wrappers vary by Strawberry version
     try:
         if query_candidate is None and hasattr(schema, "get_root_type"):
-            query_wrapper: object = schema.get_root_type("query")  # type: ignore[attr-defined]
+            query_wrapper: object = schema.get_root_type("query")
             query_candidate = (
                 getattr(query_wrapper, "python_name", None)
                 or getattr(query_wrapper, "origin", None)
@@ -90,7 +94,7 @@ def _collect_graphql_roots_from_schema(schema: Schema) -> TripleOptionalRootClas
                 or getattr(query_wrapper, "annotation", None)
             )
         if mutation_candidate is None and hasattr(schema, "get_root_type"):
-            mutation_wrapper: object = schema.get_root_type("mutation")  # type: ignore[attr-defined]
+            mutation_wrapper: object = schema.get_root_type("mutation")
             mutation_candidate = (
                 getattr(mutation_wrapper, "python_name", None)
                 or getattr(mutation_wrapper, "origin", None)
@@ -98,7 +102,7 @@ def _collect_graphql_roots_from_schema(schema: Schema) -> TripleOptionalRootClas
                 or getattr(mutation_wrapper, "annotation", None)
             )
         if subscription_candidate is None and hasattr(schema, "get_root_type"):
-            subscription_wrapper: object = schema.get_root_type("subscription")  # type: ignore[attr-defined]
+            subscription_wrapper: object = schema.get_root_type("subscription")
             subscription_candidate = (
                 getattr(subscription_wrapper, "python_name", None)
                 or getattr(subscription_wrapper, "origin", None)
@@ -147,15 +151,16 @@ for source_file in _package_path.rglob("*.py"):
     # Build dotted import path: <package>.<relative.parts.without.suffix>
     relative_path: Path = source_file.relative_to(Path(__file__).parent).with_suffix("")
     module_dotted_path: str = ".".join((_package_name, *relative_path.parts))
+    _logger.silly("Discovered module: %s", module_dotted_path)
 
     # Determine REST version from path (GraphQL remains global)
-    relative_parts: Tuple[str, ...] = source_file.relative_to(_package_path).parts  # type: ignore[assignment]
+    relative_parts: Tuple[str, ...] = source_file.relative_to(_package_path).parts
 
     # Import module
     try:
         imported_module: types.ModuleType = importlib.import_module(module_dotted_path)
     except Exception as ex:
-        print(f"[api] Import failed {module_dotted_path}: {ex}")
+        _logger.exception("Import failed %s: %s", module_dotted_path, ex)
         continue
 
     # REST: include module router when present
@@ -168,7 +173,7 @@ for source_file in _package_path.rglob("*.py"):
                 prefix=f"/{rest_version}" if rest_version else "",
             )
         except Exception as ex:
-            print(f"[api] Include REST failed {module_dotted_path}: {ex}")
+            _logger.exception("Include REST failed %s: %s", module_dotted_path, ex)
 
     # GraphQL: collect global root classes (no versioning)
     try:
@@ -200,11 +205,13 @@ for source_file in _package_path.rglob("*.py"):
                     _graphql_subscription_root_types.append(derived_subscription_root)
             elif module_schema_attr is not None:
                 # If a 'schema' symbol exists but is not Strawberry Schema; warn and continue.
-                print(
-                    f"[api] Ignored non-Schema 'schema' in {imported_module.__name__} (type={type(module_schema_attr)})"
+                _logger.silly(
+                    "Ignored non-Schema 'schema' in %s (type=%s)",
+                    imported_module.__name__,
+                    type(module_schema_attr),
                 )
     except Exception as ex:
-        print(f"[api] Collect GraphQL types failed {module_dotted_path}: {ex}")
+        _logger.exception("Collect GraphQL types failed %s: %s", module_dotted_path, ex)
 
 ###########################################
 # Build & mount a GraphQL endpoint
@@ -232,28 +239,25 @@ if _graphql_query_root_types:
         )
         api_router.include_router(graphql_router, prefix="/graphql")
     except Exception as ex:
-        print(f"[api] GraphQL setup failed: {ex}")
+        _logger.exception("GraphQL setup failed: %s", ex)
 else:
-    print("[api] No GraphQL Query types discovered; GraphQL not mounted.")
+    _logger.silly("No GraphQL Query types discovered; GraphQL not mounted.")
 
 
 ###########################################
 # Debugging
 ###########################################
 if __debug__:
-    print("================================")
-    print("[api] Routes generated:")
+    _logger.verbose("Routes generated:")
     for route in api_router.routes:
         if hasattr(route, "methods"):
-            print(f"- {route.methods}: {route.path}")
+            _logger.verbose("%s: %s", route.methods, route.path)
         else:
-            print(f"- {route.name}: {route.path}")
-    print("================================")
-    print("[api] Mounted GraphQL with:")
-    print(f"- {len(_graphql_query_root_types)} Query")
-    print(f"- {len(_graphql_mutation_root_types)} Mutation")
-    print(f"- {len(_graphql_subscription_root_types)} Subscription")
-    print("================================")
+            _logger.verbose("%s: %s", route.name, route.path)
+    _logger.verbose("Mounted GraphQL with:")
+    _logger.verbose("{%s} Query", len(_graphql_query_root_types))
+    _logger.verbose("{%s} Mutation", len(_graphql_mutation_root_types))
+    _logger.verbose("{%s} Subscription", len(_graphql_subscription_root_types))
 
 
 # Exported symbols

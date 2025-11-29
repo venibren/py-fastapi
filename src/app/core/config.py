@@ -18,6 +18,15 @@ class AppSettings(BaseSettings):
 
 
 ###################################################################
+### Logger Settings
+###################################################################
+class LoggerSettings(BaseSettings):
+    """Logger configuration settings"""
+
+    log_level: str = "DEBUG"
+
+
+###################################################################
 ### CORS Settings
 ###################################################################
 class CORSSettings(BaseSettings):
@@ -32,7 +41,7 @@ class CORSSettings(BaseSettings):
 ###################################################################
 ### Overall Project Settings
 ###################################################################
-class Settings(AppSettings, CORSSettings):
+class Settings(AppSettings, LoggerSettings, CORSSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
