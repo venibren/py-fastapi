@@ -9,9 +9,6 @@ setup_logger()
 _logger = get_logger(__name__)
 # Todo: Add DataDog / Cloudwatch logging integration
 
-# Import API router after logger setup for detailed initialization
-from src.app.api import api_router
-
 # Set up FastAPI application
 _logger.verbose("Starting FastAPI application")
 app = FastAPI(
@@ -32,6 +29,9 @@ app.add_middleware(
 )
 
 # Api router configuration
+# Import API router after logger setup for detailed initialization
+from src.app.api import api_router
+
 _logger.verbose("Including API router")
 app.include_router(api_router)
 

@@ -32,7 +32,7 @@ logging.Logger.verbose = _verbose
 
 
 # Setup logger configuration
-def setup_logger(*, use_colors: bool = True) -> logging.Logger:
+def setup_logger() -> logging.Logger:
     """Setup logging configuration with colorful output using RichHandler."""
 
     config = {
@@ -63,7 +63,7 @@ def setup_logger(*, use_colors: bool = True) -> logging.Logger:
         lg.propagate = False
         lg.handlers = []
 
-    logger = logging.getLogger("app")
+    logger = logging.getLogger(settings.app_name)
     logger.verbose("Logging initialized at level=%s", settings.log_level)
 
     return logger
@@ -84,7 +84,7 @@ class LoggingRoute(APIRoute):
         original_handler = super().get_route_handler()
 
         async def handler(request: Request) -> Response:
-            logger = get_logger(__name__)
+            logger = get_logger(settings.app_name)
             route_name = (
                 getattr(request.scope.get("route"), "name", None)
                 or self.name
