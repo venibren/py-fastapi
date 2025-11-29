@@ -101,7 +101,12 @@ class LoggingRoute(APIRoute):
             path = request.url.path
 
             # Endpoint triggered
-            logger.info("HTTP %s %s -> %s", method, path, route_name)
+            logger.info(
+                "HTTP %s %s -> %s",
+                method,
+                path,
+                route_name,
+            )
 
             start = time.perf_counter()
             try:

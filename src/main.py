@@ -10,7 +10,7 @@ _logger = get_logger(__name__)
 # Todo: Add DataDog / Cloudwatch logging integration
 
 # Set up FastAPI application
-_logger.verbose("Starting FastAPI application")
+_logger.debug("Starting FastAPI application")
 app = FastAPI(
     title=settings.app_name,
     description=settings.app_description,
@@ -19,7 +19,7 @@ app = FastAPI(
 )
 
 # CORS middleware
-_logger.verbose("Configuring CORS middleware")
+_logger.debug("Configuring CORS middleware")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_allow_origins,
@@ -32,7 +32,7 @@ app.add_middleware(
 # Import API router after logger setup for detailed initialization
 from src.app.api import api_router
 
-_logger.verbose("Including API router")
+_logger.debug("Including API router")
 app.include_router(api_router)
 
 _logger.info(

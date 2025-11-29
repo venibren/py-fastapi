@@ -28,7 +28,7 @@ TripleOptionalRootClasses: TypeAlias = Tuple[
 ###########################################
 _package_name: str = __name__
 _package_path: Path = Path(__file__).parent
-_logger.info("Auto-discovering endpoints in package: %s", _package_name)
+_logger.debug("Auto-discovering endpoints in package: %s", _package_name)
 
 
 ###########################################
@@ -248,13 +248,13 @@ else:
 # Debugging
 ###########################################
 if __debug__:
-    _logger.verbose("Routes generated:")
+    _logger.debug("Routes generated:")
     for route in api_router.routes:
         if hasattr(route, "methods"):
             _logger.verbose("%s: %s", route.methods, route.path)
         else:
             _logger.verbose("%s: %s", route.name, route.path)
-    _logger.verbose("Mounted GraphQL with:")
+    _logger.debug("Mounted GraphQL with:")
     _logger.verbose("{%s} Query", len(_graphql_query_root_types))
     _logger.verbose("{%s} Mutation", len(_graphql_mutation_root_types))
     _logger.verbose("{%s} Subscription", len(_graphql_subscription_root_types))
