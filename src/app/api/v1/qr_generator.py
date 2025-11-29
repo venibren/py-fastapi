@@ -2,8 +2,8 @@ from fastapi import APIRouter, status
 from fastapi.responses import StreamingResponse
 
 from src.app.core.logger import get_logger, LoggingRoute
-from ....models.base_schema import BaseSchema
-from ....services.qr_service import QRService
+from ...models.base_schema import BaseSchema
+from ...services.qr_service import QRService
 
 _logger = get_logger(__name__)
 
