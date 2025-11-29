@@ -48,7 +48,7 @@ def setup_logger() -> logging.Logger:
         "handlers": {
             "console": {
                 "class": "rich.logging.RichHandler",
-                "level": settings.log_level,
+                "level": settings.log_level.upper(),
                 "formatter": "rich",
                 "rich_tracebacks": True,
                 "markup": True,
@@ -59,7 +59,7 @@ def setup_logger() -> logging.Logger:
                 "log_time_format": "%Y-%m-%d %H:%M:%S.%f",
             }
         },
-        "root": {"level": settings.log_level, "handlers": ["console"]},
+        "root": {"level": settings.log_level.upper(), "handlers": ["console"]},
     }
 
     logging.config.dictConfig(config)
@@ -70,7 +70,7 @@ def setup_logger() -> logging.Logger:
         lg.handlers = []
 
     logger = logging.getLogger(settings.app_name)
-    logger.verbose("Logging initialized at level=%s", settings.log_level)
+    logger.verbose("Logging initialized at level=%s", settings.log_level.upper())
 
     return logger
 
