@@ -18,9 +18,21 @@ class AppSettings(BaseSettings):
 
 
 ###################################################################
+### CORS Settings
+###################################################################
+class CORSSettings(BaseSettings):
+    """CORS configuration settings"""
+
+    cors_allow_origins: list[str] = ["*"]
+    cors_allow_credentials: bool = True
+    cors_allow_methods: list[str] = ["*"]
+    cors_allow_headers: list[str] = ["*"]
+
+
+###################################################################
 ### Overall Project Settings
 ###################################################################
-class Settings(AppSettings):
+class Settings(AppSettings, CORSSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
@@ -31,3 +43,5 @@ class Settings(AppSettings):
 
 
 settings = Settings()
+
+__all__ = ["settings"]
