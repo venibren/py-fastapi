@@ -17,13 +17,19 @@ logging.addLevelName(VERBOSE_LEVEL, "VERBOSE")
 # Extend Logger class with custom methods
 def _silly(self: logging.Logger, msg, *args, **kwargs) -> None:
     if self.isEnabledFor(SILLY_LEVEL):
-        self._log(SILLY_LEVEL, msg, args, **kwargs)
+        stacklevel = kwargs.pop(
+            "stacklevel", 1
+        )  # Adjusted stacklevel to caller location and not wrapper
+        self._log(SILLY_LEVEL, msg, args, stacklevel=stacklevel + 1, **kwargs)
 
 
 # Extend Logger class with custom methods
 def _verbose(self: logging.Logger, msg, *args, **kwargs) -> None:
     if self.isEnabledFor(VERBOSE_LEVEL):
-        self._log(VERBOSE_LEVEL, msg, args, **kwargs)
+        stacklevel = kwargs.pop(
+            "stacklevel", 1
+        )  # Adjusted stacklevel to caller location and not wrapper
+        self._log(VERBOSE_LEVEL, msg, args, stacklevel=stacklevel + 1, **kwargs)
 
 
 # Attach methods to Logger class
@@ -85,6 +91,7 @@ class LoggingRoute(APIRoute):
 
         async def handler(request: Request) -> Response:
             logger = get_logger(settings.app_name)
+
             route_name = (
                 getattr(request.scope.get("route"), "name", None)
                 or self.name
