@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.app.core.logger import get_logger, setup_logger
 from src.app.core.config import settings
+from src.app.middleware import ProcessTimeMiddleware
 
 # Initialize logger
 setup_logger()
@@ -27,6 +28,9 @@ app.add_middleware(
     allow_methods=settings.cors_allow_methods,
     allow_headers=settings.cors_allow_headers,
 )
+
+# Additional middleware
+app.add_middleware(ProcessTimeMiddleware)
 
 # Api router configuration
 # Import API router after logger setup for detailed initialization
