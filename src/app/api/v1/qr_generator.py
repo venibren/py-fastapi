@@ -8,7 +8,7 @@ from ...services.qr_service import QRService
 _logger = get_logger(__name__)
 
 router = APIRouter(
-    prefix="/qr",
+    prefix="/qr-code",
     tags=["QR Code"],
     route_class=LoggingRoute,
 )
