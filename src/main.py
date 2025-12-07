@@ -16,7 +16,7 @@ app = FastAPI(
     title=settings.app_name,
     description=settings.app_description,
     version=settings.app_version,
-    # root_path="/api",
+    root_path=settings.app_root_path,
 )
 
 # CORS middleware
@@ -30,6 +30,7 @@ app.add_middleware(
 )
 
 # Additional middleware
+_logger.debug("Configuring custom middleware")
 app.add_middleware(ProcessTimeMiddleware)
 
 # Api router configuration
@@ -39,6 +40,11 @@ from src.app.api import api_router
 _logger.debug("Including API router")
 app.include_router(api_router)
 
+_logger.info("FastAPI setup complete: %s v%s", settings.app_name, settings.app_version)
+
 _logger.info(
-    "Application setup complete: %s v%s", settings.app_name, settings.app_version
+    "FastAPI running on %s:%s%s 🚀",
+    settings.app_base_url,
+    settings.app_port,
+    settings.app_root_path,
 )

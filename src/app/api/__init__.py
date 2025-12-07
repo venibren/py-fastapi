@@ -34,7 +34,7 @@ _logger.debug("Auto-discovering endpoints in package: %s", _package_name)
 ###########################################
 # API router to collect discovered endpoints
 ###########################################
-api_router: APIRouter = APIRouter(prefix="/api")
+api_router: APIRouter = APIRouter()
 
 
 ###########################################
