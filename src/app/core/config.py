@@ -66,7 +66,7 @@ class PostgresSettings(DatabaseSettings):
 
     @computed_field
     @property
-    def get_uri(self) -> str:
+    def get_pg_uri(self) -> str:
         credentials = f"{self.postgres_user}:{self.postgres_password}"
         location = f"{self.postgres_server}:{self.postgres_port}/{self.postgres_db}"
         return f"{credentials}@{location}"
