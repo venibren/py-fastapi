@@ -20,6 +20,7 @@ dependencies = [
     "rich>=14.2.0",
     "ruff>=0.14.5",
     "setuptools>=80.9.0",
+    "sqlalchemy>=2.0.44",
     "strawberry-graphql[fastapi]",
     "uvicorn[standard]>=0.35.0",
     "wheel>=0.45.1",
