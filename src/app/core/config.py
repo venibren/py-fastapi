@@ -1,7 +1,25 @@
+from enum import StrEnum
 from pydantic import Field, SecretStr, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from typing import Optional
+
+
+###################################################################
+### Project Environment
+###################################################################
+class Environment(StrEnum):
+    DEVELOPMENT = "development"
+    STAGING = "staging"
+    PRODUCTION = "production"
+
+    @classmethod
+    def _missing_(cls, value):
+        value = value.lower()
+        for member in cls:
+            if member == value:
+                return member
+        return None
 
 
 ###################################################################
@@ -83,6 +101,8 @@ class Settings(AppSettings, LoggerSettings, PostgresSettings, CORSSettings):
         cache_strings=True,
         extra="ignore",
     )
+
+    environment: Environment = Field(default=Environment.PRODUCTION)
 
 
 settings = Settings()

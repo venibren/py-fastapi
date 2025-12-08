@@ -64,6 +64,7 @@ def _configure_routes(app):
 
 def create_app():
     _logger.debug("Creating FastAPI application instance")
+    _logger.debug("Environment: %s", settings.environment.upper())
 
     app = FastAPI(
         title=settings.app_name,
