@@ -9,6 +9,7 @@ readme = "README.md"
 requires-python = ">=3.9, <4.0"
 
 dependencies = [
+    "asyncpg>=0.31.0",
     "fastapi",
     "image>=1.5.33",
     "isort>=6.1.0",
