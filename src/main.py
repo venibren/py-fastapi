@@ -1,50 +1,91 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
 from src.app.core.logger import get_logger, setup_logger
 from src.app.core.config import settings
-from src.app.middleware import ProcessTimeMiddleware
+from src.app.core.db import database
+
+
+# async def create_tables() -> None:
+#     async with database.async_engine.begin() as connection:
+#         await connection.run_sync(Base.metadata.create_all)
 
 # Initialize logger
 setup_logger()
 _logger = get_logger(__name__)
-# Todo: Add DataDog / Cloudwatch logging integration
 
-# Set up FastAPI application
-_logger.debug("Starting FastAPI application")
-app = FastAPI(
-    title=settings.app_name,
-    description=settings.app_description,
-    version=settings.app_version,
-    root_path=settings.app_root_path,
-)
 
-# CORS middleware
-_logger.debug("Configuring CORS middleware")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.cors_allow_origins,
-    allow_credentials=settings.cors_allow_credentials,
-    allow_methods=settings.cors_allow_methods,
-    allow_headers=settings.cors_allow_headers,
-)
+@asynccontextmanager
+async def _lifespan(app: FastAPI) -> AsyncGenerator:
+    _logger.info("Starting up %s v%s", settings.app_name, settings.app_version)
 
-# Additional middleware
-_logger.debug("Configuring custom middleware")
-app.add_middleware(ProcessTimeMiddleware)
+    # TODO: DataDog logging integration
 
-# Api router configuration
-# Import API router after logger setup for detailed initialization
-from src.app.api import api_router
+    # TODO: Cache integration
 
-_logger.debug("Including API router")
-app.include_router(api_router)
+    # TODO: Queue integration
 
-_logger.info("FastAPI setup complete: %s v%s", settings.app_name, settings.app_version)
+    try:
 
-_logger.info(
-    "FastAPI running on %s:%s%s 🚀",
-    settings.app_base_url,
-    settings.app_port,
-    settings.app_root_path,
-)
+        yield
+
+    finally:
+        _logger.info("Shutting down application")
+
+        _logger.verbose("Shutdown complete")
+
+    return
+
+
+def _configure_middleware(app):
+    from fastapi.middleware.cors import CORSMiddleware
+
+    _logger.debug("Configuring CORS middleware")
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_allow_origins,
+        allow_credentials=settings.cors_allow_credentials,
+        allow_methods=settings.cors_allow_methods,
+        allow_headers=settings.cors_allow_headers,
+    )
+
+    from src.app.middleware import ProcessTimeMiddleware
+
+    _logger.debug("Configuring custom middleware")
+    app.add_middleware(ProcessTimeMiddleware)
+
+
+def _configure_routes(app):
+    from src.app.api import api_router
+
+    _logger.debug("Including API router")
+    app.include_router(api_router)
+
+
+def create_app():
+    _logger.debug("Creating FastAPI application instance")
+
+    app = FastAPI(
+        title=settings.app_name,
+        description=settings.app_description,
+        version=settings.app_version,
+        root_path=settings.app_root_path,
+        lifespan=_lifespan,
+    )
+
+    _configure_middleware(app)
+    _configure_routes(app)
+
+    _logger.info(
+        "FastAPI running on %s:%s%s 🚀",
+        settings.app_base_url,
+        settings.app_port,
+        settings.app_root_path,
+    )
+
+    return app
+
+
+app = create_app()
+
+__all__ = ["app"]
