@@ -3,7 +3,7 @@ from fastapi import FastAPI
 
 from src.app.core.logger import get_logger, setup_logger
 from src.app.core.config import settings
-from src.app.core.db import database
+from src.app.core.db import dispose_engine
 
 
 # async def create_tables() -> None:
@@ -31,6 +31,8 @@ async def _lifespan(app: FastAPI) -> AsyncGenerator:
 
     finally:
         _logger.info("Shutting down application")
+
+        await dispose_engine()
 
         _logger.verbose("Shutdown complete")
 
