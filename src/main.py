@@ -60,7 +60,7 @@ def _configure_middleware(app):
 def _configure_routes(app):
     from src.app.api import api_router
 
-    _logger.debug("Including API router")
+    _logger.debug("Configuring API router")
     app.include_router(api_router)
 
 

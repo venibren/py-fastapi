@@ -33,7 +33,7 @@ class AppSettings(BaseSettings):
     app_version: Optional[str] = Field(default=None)
 
     app_base_url: Optional[str] = Field(default=None)
-    app_port: Optional[str] = Field(default=None)
+    app_port: Optional[int] = Field(default=None)
     app_root_path: str = Field(default="/api")
 
 
