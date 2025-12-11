@@ -81,7 +81,7 @@ def create_app():
 
     _logger.info(
         "FastAPI running on http://%s:%s%s 🚀",
-        settings.app_base_url,
+        settings.app_host,
         settings.app_port,
         settings.app_root_path,
     )

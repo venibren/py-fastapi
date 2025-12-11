@@ -32,7 +32,7 @@ class AppSettings(BaseSettings):
     app_description: Optional[str] = Field(default=None)
     app_version: Optional[str] = Field(default=None)
 
-    app_base_url: Optional[str] = Field(default=None)
+    app_host: Optional[str] = Field(default=None)
     app_port: Optional[int] = Field(default=None)
     app_root_path: str = Field(default="/api")
 
@@ -71,11 +71,12 @@ class DatabaseSettings(BaseSettings):
 class PostgresSettings(DatabaseSettings):
     """PostgreSQL connection settings."""
 
-    postgres_user: str = Field(default="postgres")
-    postgres_password: SecretStr = Field(default=SecretStr("postgres"))
     postgres_server: str = Field(default="localhost")
     postgres_port: int = Field(default=5432)
     postgres_db: str = Field(default="postgres")
+    postgres_db_schema: str = Field(default="postgres")
+    postgres_user: str = Field(default="postgres")
+    postgres_password: SecretStr = Field(default=SecretStr("py_fastapi"))
 
     postgres_url: Optional[str] = Field(default=None, description="Full DSN")
 
