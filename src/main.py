@@ -80,7 +80,7 @@ def create_app():
     _configure_routes(app)
 
     _logger.info(
-        "FastAPI running on %s:%s%s 🚀",
+        "FastAPI running on http://%s:%s%s 🚀",
         settings.app_base_url,
         settings.app_port,
         settings.app_root_path,
