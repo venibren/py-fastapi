@@ -21,7 +21,7 @@ Small FastAPI playground for experimenting with REST and GraphQL routing, custom
 
 1) Python 3.9+ (virtual environment recommended)
 2) Install dependencies: `pip install -e .`
-3) Run the app: `uvicorn src.main:app --reload`
+3) Run the app: `python main.py`
 4) Visit docs at `http://127.0.0.1:8000/docs`
 
 ## Configuration
@@ -34,14 +34,14 @@ Environment variables are loaded from `.env` (see `.env.example`):
 
 ## Roadmap
 
-- Integrate relational/NoSQL stores and cache:
-  - Add connection management and repositories for PostgreSQL, SQLite, MongoDB
+- Integrate relational db stores and cache:
+  - Add connection management and repositories for PostgreSQL
   - Add Redis-backed caching layer
 - Authentication & authorization:
   - OAuth2/OIDC login flow with token issuance/refresh; protect routes via dependencies
   - Add user persistence + hashing, and scoped roles for future APIs
 - Observability:
-  - Configure telementary for logs/metrics/traces to Datadog and maybe CloudWatch (OTLP)
+  - Configure telementary for logs/metrics/traces (either Datadog, CloudWatch, or  OpenObserve) (OTLP)
 - Containerization:
   - Multi-stage Dockerfile (builder/runtime)
 - CI/CD:
