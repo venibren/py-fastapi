@@ -14,3 +14,9 @@ class User(BaseSchema):
     created_date: datetime
     updated_date: datetime
     is_active: bool = True
+
+
+class UserUpdate(BaseSchema):
+    email: str | None = None
+    nickname: str | None = None
+    is_active: bool | None = None
