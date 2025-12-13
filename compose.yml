@@ -1,0 +1,67 @@
+services:
+  backend:
+    image: python:3.13-alpine
+    restart: unless-stopped
+    container_name: py_fastapi_backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - ENVIRONMENT
+      - LOG_LEVEL
+      - APP_HOST
+      - APP_PORT
+      - CORS_ALLOW_ORIGINS
+      - CORS_ALLOW_CREDENTIALS
+      - CORS_ALLOW_METHODS
+      - CORS_ALLOW_HEADERS
+      - POSTGRES_SERVER
+      - POSTGRES_PORT
+      - POSTGRES_DB
+      - POSTGRES_DB_SCHEMA
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 3s
+        max_attempts: 3
+        window: 10s
+    networks:
+      - py_fastapi_network
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    container_name: py_fastapi_db
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_DB_SCHEMA
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "${POSTGRES_DB}"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+    volumes:
+      - py_fastapi_db_data:/var/lib/postgresql/data
+    networks:
+      - py_fastapi_network
+
+networks:
+  py_fastapi_network:
+    name: py_fastapi
+    driver: bridge
+
+volumes:
+  py_fastapi_db_data:
+    name: py_fastapi_db_data
+    driver: local
