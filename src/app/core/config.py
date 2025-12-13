@@ -34,6 +34,7 @@ class AppSettings(BaseSettings):
 
     app_host: Optional[str] = Field(default=None)
     app_port: Optional[int] = Field(default=None)
+    app_workers: int = Field(default=1)
     app_root_path: str = Field(default="/api")
 
 

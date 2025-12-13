@@ -11,4 +11,5 @@ if __name__ == "__main__":
         access_log=True,
         use_colors=True,
         reload=True,
+        workers=settings.app_workers,
     )
