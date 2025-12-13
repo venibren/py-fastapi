@@ -1,11 +1,12 @@
-FROM python:3.13-alpine as builder
+FROM python:3.13-alpine AS builder
 
 RUN apk add --no-cache \
-    build-basae \
+    build-base \
     postgresql-dev \
     libffi-dev
 
-COPY --from=ghcr.io\astral-sh/uv:latest /uv /usr/local/bin/uv
+RUN python -m pip install --no-cache-dir -U pip \
+    && pip install --no-cache-dir uv
 
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
@@ -14,35 +15,36 @@ ENV UV_COMPILE_BYTECODE=1 \
 WORKDIR /build
 
 COPY pyproject.toml uv.lock* ./
+RUN uv venv /opt/venv \
+    && uv sync --frozen --no-dev --no-install-project
 
-RUN uv venv /opt/ven && \
-    uv sync --frozen --no-dev --no-install-project
+COPY . .
+RUN uv sync --frozen --no-dev
 
 FROM python:3.13-alpine AS production
 
-RUN apk add --no-cache \
-    postgresql-libs
+RUN apk add --no-cache postgresql-libs
 
 COPY --from=builder /opt/venv /opt/venv
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PYTHON_VERSION=3.13 \
     PATH="/opt/venv/bin:$PATH" \
-    WORKERS_COUNT=1
+    WORKERS_COUNT=1 \
+    APP_HOST=0.0.0.0 \
+    APP_PORT=8000
 
 WORKDIR /app
 
 RUN addgroup -g 1001 -S uvicorn \
     && adduser -u 1001 -S uvicorn -G uvicorn \
     && mkdir -p /home/uvicorn \
-    && chown -R uvicorn:uvicorn /home/uvicorn \
-    && chown -R uvicorn:uvicorn /app
+    && chown -R uvicorn:uvicorn /home/uvicorn /app
 
-COPY --chown=uvicorn:uvicorn ./ ./
+COPY --chown=uvicorn:uvicorn . .
 
 USER uvicorn
 
-EXPOSE 8799
+EXPOSE 8000
 
-CMD ["/bin/sh", "-c", "alembic upgrade head && python main.py"]
+CMD ["/bin/sh", "-lc", "alembic upgrade head && exec uvicorn main:app --host ${APP_HOST} --port ${APP_PORT} --workers ${WORKERS_COUNT}"]
