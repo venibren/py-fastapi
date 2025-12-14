@@ -1,48 +1,19 @@
-FROM python:3.13-alpine AS builder
+FROM python:3.12-slim AS base
 
-RUN apk add --no-cache build-base postgresql-dev libffi-dev
-
-RUN python -m pip install --no-cache-dir -U pip && pip install --no-cache-dir uv
-
-ENV UV_COMPILE_BYTECODE=1 \
-    UV_LINK_MODE=copy \
-    UV_PYTHON_DOWNLOADS=never
-
-WORKDIR /build
-
-COPY pyproject.toml uv.lock* ./
-RUN uv venv /opt/venv \
-    && uv sync --frozen --no-dev --no-install-project
-
-COPY . .
-RUN uv sync --frozen --no-dev
-
-FROM python:3.13-alpine AS production
-
-RUN apk add --no-cache postgresql-libs bash
-
-COPY --from=builder /opt/venv /opt/venv
-
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PATH="/opt/venv/bin:$PATH" \
-    APP_HOST=0.0.0.0 \
-    APP_PORT=8000 \
-    APP_WORKERS=1
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PYTHONPATH="/app"
 
 WORKDIR /app
 
-RUN addgroup -g 1001 -S uvicorn \
-    && adduser -u 1001 -S uvicorn -G uvicorn \
-    && mkdir -p /home/uvicorn \
-    && chown -R uvicorn:uvicorn /home/uvicorn /app
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY --chown=uvicorn:uvicorn . .
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY --chown=uvicorn:uvicorn docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY . .
 
-USER uvicorn
-EXPOSE 8000
-
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["sh", "-c", "uvicorn src.main:app --host ${APP_HOST:-0.0.0.0} --port ${APP_PORT:-8000} --workers ${APP_WORKERS:-1}"]
