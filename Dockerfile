@@ -16,4 +16,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["sh", "-c", "uvicorn src.main:app --host ${APP_HOST:-0.0.0.0} --port ${APP_PORT:-8000} --workers ${APP_WORKERS:-1}"]
+CMD ["sh", "-c", "python -m uvicorn src.main:app --host 0.0.0.0 --port 8000 --workers 1 --log-level debug --access-log"]
