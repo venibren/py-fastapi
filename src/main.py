@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from collections.abc import AsyncGenerator
 from fastapi import FastAPI
 
 from src.app.core.logger import get_logger, setup_logger
@@ -19,7 +20,7 @@ _logger = get_logger(__name__)
 async def _lifespan(app: FastAPI) -> AsyncGenerator:
     _logger.info("Starting up %s v%s", settings.app_name, settings.app_version)
 
-    # TODO: DataDog logging integration
+    # TODO: OTEL logging integration
 
     # TODO: Cache integration
 
