@@ -3,7 +3,7 @@ import time
 from fastapi import APIRouter, BackgroundTasks, Response, status
 
 from src.app.core.logger import get_logger, LoggingRoute
-from ...models.base_schema import BaseSchema
+from ...schemas.base_schema import BaseSchema
 
 _logger = get_logger(__name__)
 

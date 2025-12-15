@@ -4,7 +4,7 @@ from uuid import UUID, uuid8
 
 from src.app.core.logger import get_logger, LoggingRoute
 
-from ...models.user import User, UserUpdate
+from ...schemas.user import User, UserUpdate
 
 _logger = get_logger(__name__)
 
