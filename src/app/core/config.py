@@ -75,7 +75,7 @@ class PostgresSettings(DatabaseSettings):
     postgres_server: str = Field(default="localhost")
     postgres_port: int = Field(default=5432)
     postgres_db: str = Field(default="postgres")
-    postgres_db_schema: str = Field(default="postgres")
+    postgres_db_schema: str = Field(default="public")
     postgres_user: str = Field(default="postgres")
     postgres_password: SecretStr = Field(default=SecretStr("py_fastapi"))
 
@@ -87,7 +87,9 @@ class PostgresSettings(DatabaseSettings):
     @computed_field
     @property
     def postgres_uri(self) -> str:
-        credentials = f"{self.postgres_user}:{self.postgres_password}"
+        credentials = (
+            f"{self.postgres_user}:{self.postgres_password.get_secret_value()}"
+        )
         location = f"{self.postgres_server}:{self.postgres_port}/{self.postgres_db}"
         return f"{credentials}@{location}"
 
