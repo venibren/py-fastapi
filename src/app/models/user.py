@@ -35,7 +35,7 @@ class User(BaseModel):
         DateTime(timezone=True), nullable=True
     )
 
-    status = Mapped[UserStatus] = mapped_column(
+    status: Mapped[UserStatus] = mapped_column(
         Enum(UserStatus, name="user_status", native_enum=True),
         default=UserStatus.PENDING_VERIFICATION,
         nullable=False,
