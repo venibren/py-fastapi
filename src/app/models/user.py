@@ -17,6 +17,8 @@ class UserStatus(StrEnum):
 
 
 class User(Base):
+    __tablename__ = "users"
+
     tenant_id: Mapped[PyUUID] = mapped_column(
         AlUUID(as_uuid=True),
         nullable=True,
