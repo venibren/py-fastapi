@@ -1,8 +1,11 @@
+from sqlalchemy import MetaData
 from sqlalchemy.dialects.postgresql import UUID as AlUUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declared_attr
 from uuid import UUID as PyUUID, uuid7
 
 import re
+
+from ..core.config import settings
 
 _RE_1 = re.compile(r"(.)([A-Z][a-z]+)")
 _RE_2 = re.compile(r"([a-z0-9])([A-Z])")
@@ -14,11 +17,11 @@ def to_snake_case(name: str) -> str:
 
 
 class Base(DeclarativeBase):
-    pass
-
-
-class BaseModel(Base):
     __abstract__ = True
+
+    metadata = MetaData(
+        schema=settings.postgres_db_schema,
+    )
 
     @declared_attr.directive
     def __tablename__(cls) -> str:
