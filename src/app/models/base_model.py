@@ -28,7 +28,7 @@ class BaseModel(Base):
         AlUUID(as_uuid=True),
         primary_key=True,
         unique=True,
-        default_factory=uuid7,
+        default=uuid7,
         nullable=False,
     )
 
