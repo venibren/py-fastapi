@@ -15,11 +15,9 @@ class Base(DeclarativeBase, MappedAsDataclass):
     pass
 
 
-_connString: str = f"{settings.postgres_async_prefix}{settings.postgres_uri}"
+_conn_str: str = f"{settings.postgres_async_prefix}{settings.postgres_uri}"
 
-async_engine: AsyncEngine = create_async_engine(
-    _connString, echo=False, future=True, pool_pre_ping=True
-)
+async_engine: AsyncEngine = create_async_engine(_conn_str, echo=False, future=True, pool_pre_ping=True)
 
 async_session_factory: async_sessionmaker[AsyncSession] = async_sessionmaker(
     autocommit=False,
