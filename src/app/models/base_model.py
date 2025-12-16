@@ -13,7 +13,11 @@ def to_snake_case(name: str) -> str:
     return _RE_2.sub(r"\1_\2", s1).lower()
 
 
-class BaseModel(DeclarativeBase):
+class Base(DeclarativeBase):
+    pass
+
+
+class BaseModel(Base):
     __abstract__ = True
 
     @declared_attr.directive

@@ -1,4 +1,4 @@
-from src.app.models.base_model import BaseModel
-from src.app.models.user import User
+from .base_model import Base, BaseModel
+from .user import User
 
-__all__ = ["Base", "User"]
+__all__ = ["Base", "BaseModel", "User"]
