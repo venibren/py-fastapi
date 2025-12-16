@@ -1,6 +1,6 @@
 from datetime import datetime
 from fastapi import APIRouter, HTTPException, status
-from uuid import UUID, uuid8
+from uuid import UUID, uuid7
 
 from src.app.core.logger import get_logger, LoggingRoute
 
@@ -12,7 +12,7 @@ router = APIRouter(prefix="/user", tags=["User"], route_class=LoggingRoute)
 
 
 _user = User(
-    id=uuid8(),
+    id=uuid7(),
     email="brendan@venibren.dev",
     email_verified=True,
     username="venibren",
