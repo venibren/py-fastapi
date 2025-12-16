@@ -7,12 +7,11 @@ services:
     image: py-fastapi-app:local
     ports: ["8000:8000"]
     restart: unless-stopped
-    working_dir: /app
-    command: ["sh", "-c", "python -m uvicorn src.main:app --host 0.0.0.0 --port 8000 --workers 1 --log-level debug --access-log"]
+    command: ["sh", "-c", "python ./main.py"]
     env_file: [.env]
     environment:
-      ENVIRONMENT: ${ENVIRONMENT:production}
-      LOG_LEVEL: ${LOG_LEVEL:info}
+      ENVIRONMENT: ${ENVIRONMENT:-production}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
       APP_HOST: ${APP_HOST:-0.0.0.0}
       APP_PORT: ${APP_PORT:-8000}
       APP_WORKERS: ${APP_WORKERS:-1}
